@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         //reading input image from internal storage.
 
-        Mat img = imread(Environment.getExternalStorageDirectory().getAbsolutePath() +"/colorballs.jpg");
+        Mat img = imread(Environment.getExternalStorageDirectory().getAbsolutePath() +"/colorballs.png");
         /*
         Mat img = new Mat();
         Utils.bitmapToMat(bitmap, img);*/
@@ -147,8 +147,15 @@ public class MainActivity extends AppCompatActivity {
     Mat detectColor(Mat srcImg) {
         Mat blurImg = new Mat();
         Mat hsvImage = new Mat();
-        Mat color_range_red = new Mat();
-        Mat color_range_green = new Mat();
+        //Mat color_range_red = new Mat();
+        //Mat color_range_green = new Mat();
+        Mat color_range_A = new Mat();
+        Mat color_range_B = new Mat();
+        Mat color_range_C = new Mat();
+        Mat color_range_D = new Mat();
+        Mat color_range_E = new Mat();
+        Mat color_range_F = new Mat();
+
         Mat color_range = new Mat();
 
         //bluring image to filter noises
@@ -158,11 +165,21 @@ public class MainActivity extends AppCompatActivity {
         Imgproc.cvtColor(blurImg, hsvImage, Imgproc.COLOR_BGR2HSV);
 
         //filtering red and green pixels based on given opencv HSV color range
-        Core.inRange(hsvImage, new Scalar(0,50,50), new Scalar(5,255,255), color_range_red);
-        Core.inRange(hsvImage, new Scalar(40,50,50), new Scalar(50,255,255), color_range_green);
+        //Core.inRange(hsvImage, new Scalar(0,50,50), new Scalar(5,255,255), color_range_red);
+        //Core.inRange(hsvImage, new Scalar(40,50,50), new Scalar(50,255,255), color_range_green);
+        Core.inRange(hsvImage, new Scalar(80,80,80), new Scalar(90,180,180), color_range_A);
+        Core.inRange(hsvImage, new Scalar(70,80,80), new Scalar(80,180,180), color_range_B);
+        Core.inRange(hsvImage, new Scalar(10,80,80), new Scalar(20,180,180), color_range_C);
+        Core.inRange(hsvImage, new Scalar(10,80,180), new Scalar(20,180,230), color_range_D);
+        Core.inRange(hsvImage, new Scalar(0,80,80), new Scalar(10,180,180), color_range_E);
+        Core.inRange(hsvImage, new Scalar(0,80,180), new Scalar(10,180,230), color_range_F);
 
         //applying bitwise or to detect both red and green color.
-        Core.bitwise_or(color_range_red,color_range_green,color_range);
+        Core.bitwise_or(color_range_A,color_range_B,color_range);
+        Core.bitwise_or(color_range, color_range_C, color_range);
+        Core.bitwise_or(color_range, color_range_D, color_range);
+        Core.bitwise_or(color_range, color_range_E, color_range);
+        Core.bitwise_or(color_range, color_range_F, color_range);
 
         return color_range;
     }
